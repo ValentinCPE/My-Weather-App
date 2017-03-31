@@ -1,10 +1,14 @@
 package lyon1.iut.weatherapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 /**
@@ -28,11 +32,26 @@ public class SplashScreen extends Activity{
             videoElem.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
             {
                 public void onCompletion(MediaPlayer mp) {
-                    start();
+                    testConnection();
                 }});
             videoElem.start();
 
         } catch(Exception ex) {
+            start();
+        }
+
+    }
+
+    private void testConnection()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if(!isConnected){
+            quit();
+        }else{
             start();
         }
     }
@@ -42,6 +61,14 @@ public class SplashScreen extends Activity{
         if(isFinishing())
             return;
         startActivity(new Intent(this, WeatherActivity.class));
+        finish();
+    }
+
+    private void quit()
+    {
+        Toast.makeText(SplashScreen.this,
+                "No connection, App closed !",
+                Toast.LENGTH_LONG).show();
         finish();
     }
 }

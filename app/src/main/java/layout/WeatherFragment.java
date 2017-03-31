@@ -16,9 +16,14 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import lyon1.iut.weatherapp.AsyncTask;
 import lyon1.iut.weatherapp.CitySaved;
+import lyon1.iut.weatherapp.Forecast;
 import lyon1.iut.weatherapp.R;
+import lyon1.iut.weatherapp.Weather;
 
 
 public class WeatherFragment extends Fragment {
@@ -67,6 +72,6 @@ public class WeatherFragment extends Fragment {
     }
 
     private void majMeteo(final String city){
-        new AsyncTask().execute(city,champVille,champMAJ,champDetail,champTemp,IconeMeteo,getActivity());
+        new AsyncTask().execute(city,getActivity(),champVille,champMAJ,champDetail,champTemp,IconeMeteo);
     }
 }

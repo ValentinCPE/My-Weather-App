@@ -8,6 +8,8 @@ import android.text.InputType;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 import layout.WeatherFragment;
 
 public class WeatherActivity extends AppCompatActivity {
@@ -22,6 +24,7 @@ public class WeatherActivity extends AppCompatActivity {
                     .add(R.id.frame, new WeatherFragment())
                     .commit();
         }
+
     }
 
     @Override

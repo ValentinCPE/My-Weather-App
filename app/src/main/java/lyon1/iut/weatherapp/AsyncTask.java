@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -27,7 +28,7 @@ import java.util.Locale;
 public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
 
     private static final String OPEN_WEATHER_MAP_API =
-            "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=910f0c05f62e5508a3428198252eed06&units=metric";
+            "http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=910f0c05f62e5508a3428198252eed06&units=metric";
 
     String chaine, chaine2;
     BufferedReader in;
@@ -45,12 +46,12 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
     @Override
     protected JSONObject doInBackground(Object... params) {
         chaine = (String) params[0];
-        champVille = (TextView) params[1];
-        champMAJ = (TextView) params[2];
-        champDetail = (TextView) params[3];
-        champTemp = (TextView) params[4];
-        IconeMeteo = (TextView) params[5];
-        weatherFragmentActivity = (Activity) params[6];
+        weatherFragmentActivity = (Activity) params[1];
+        champVille = (TextView) params[2];
+        champMAJ = (TextView) params[3];
+        champDetail = (TextView) params[4];
+        champTemp = (TextView) params[5];
+        IconeMeteo = (TextView) params[6];
 
 
         try {
@@ -104,7 +105,57 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
                             weatherFragmentActivity.getString(R.string.place_not_found),
                             Toast.LENGTH_LONG).show();
                 } else {
-                        try {
+                    try {
+                        Weather weatherData;
+                        ArrayList<Weather> previsionsVille = new ArrayList<>(); //list of objects Weather representing the forecast
+                        JSONObject details, main, sys, oneValueListJSON;
+
+                        JSONArray forecastsList = jsonobj.getJSONArray("list"); //forecast fetched in the API
+
+                        for(int i = 0; i < forecastsList.length(); i++)
+                        {
+                            oneValueListJSON = forecastsList.getJSONObject(i);
+                            details = oneValueListJSON.getJSONArray("weather").getJSONObject(0);
+                            main = oneValueListJSON.getJSONObject("main");
+                            sys = oneValueListJSON.getJSONObject("sys");
+
+                            //new object for new forecast
+                            weatherData = new Weather();
+
+                            weatherData.setUpdateTime(oneValueListJSON.getLong("dt"));
+
+                            weatherData.setHumidity(main.getString("humidity"));
+                            weatherData.setPressure(main.getString("pressure"));
+
+                            weatherData.setTemperature(main.getDouble("temp"));
+                            weatherData.setIcone(details.getInt("id"),weatherFragmentActivity);
+
+                            previsionsVille.add(weatherData);
+                        }
+
+                        Forecast.addForecast(chaine,previsionsVille);
+
+
+                        //using of the class Forecast with the only useful date
+                            ArrayList<Weather> forecastsReader = Forecast.getWeatherList(chaine);
+
+                            champVille.setText(chaine);
+                            champMAJ.setText(forecastsReader.get(0).getUpdateTimeToString());
+                            champDetail.setText("Humidity : " + forecastsReader.get(0).getHumidity()
+                                    + "%\nPressure : " + forecastsReader.get(0).getPressure() + " Pa");
+                            champTemp.setText(String.valueOf(forecastsReader.get(0).getTemperature()) + " °C");
+                            IconeMeteo.setText(forecastsReader.get(0).getIcone());
+
+                          /*  for(int i = 0; i < forecastsReader.size(); i++) {
+                                Log.d("testHour", forecastsReader.get(i).getUpdateTimeToString());
+                            } */
+                    } catch (JSONException e) {
+                        Toast.makeText(weatherFragmentActivity,
+                                weatherFragmentActivity.getString(R.string.error_fetch_data),
+                                Toast.LENGTH_LONG).show();
+                        System.err.println(e.getMessage());
+                    }
+                       /* try {
                             champVille.setText(jsonobj.getString("name").toUpperCase(Locale.FRANCE) +
                                     ", " +
                                     jsonobj.getJSONObject("sys").getString("country"));
@@ -130,37 +181,8 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
                         }catch(Exception e){
                             Log.e("weather", "data not found in the JSON");
                             Log.e("weather", e.getMessage());
-                        }
+                        } */
                 }
-    }
-
-    private void setWeatherIcon(int actualId, long sunrise, long sunset){
-        int id = actualId / 100;
-        String icon = "";
-        if(actualId == 800){
-            long currentTime = new Date().getTime();
-            if(currentTime>=sunrise && currentTime<sunset) {
-                icon = weatherFragmentActivity.getString(R.string.weather_sunny);
-            } else {
-                icon = weatherFragmentActivity.getString(R.string.weather_clear_night);
-            }
-        } else {
-            switch(id) {
-                case 2 : icon = weatherFragmentActivity.getString(R.string.weather_thunder);
-                    break;
-                case 3 : icon = weatherFragmentActivity.getString(R.string.weather_drizzle);
-                    break;
-                case 7 : icon = weatherFragmentActivity.getString(R.string.weather_foggy);
-                    break;
-                case 8 : icon = weatherFragmentActivity.getString(R.string.weather_cloudy);
-                    break;
-                case 6 : icon = weatherFragmentActivity.getString(R.string.weather_snowy);
-                    break;
-                case 5 : icon = weatherFragmentActivity.getString(R.string.weather_rainy);
-                    break;
-            }
-        }
-        IconeMeteo.setText(icon);
     }
 
 }
