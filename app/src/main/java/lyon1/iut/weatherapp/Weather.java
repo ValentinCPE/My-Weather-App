@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -37,7 +38,7 @@ public class Weather {
 
 
     public String getUpdateTimeToString() {
-        DateFormat df = DateFormat.getDateTimeInstance();
+        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         String updatedOn = df.format(new Date(this.updateTime*1000));
 
         //add 0 at the beginning if day < 10
