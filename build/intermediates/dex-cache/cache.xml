@@ -7,7 +7,15 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
+<<<<<<< master
+<<<<<<< master
         sha1="83c94dd257ea0f1e643dc2a8ecdc42fa9960371b">
+=======
+        sha1="cdd25b96ee2e6dcf6e012aa2a79376234971a4d7">
+>>>>>>> swipe management
+=======
+        sha1="daff8c9c1fb9d4560d840ec30efb3eaee85cf9e1">
+>>>>>>> Manage scrolling screen
         <dex dex="/home/valentin/Documents/IUT/My-Weather-App/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_361ea1338b52ac90fe20775b17816612b6564742/classes.dex" />
     </item>
     <item
@@ -70,7 +78,15 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
+<<<<<<< master
+<<<<<<< master
         sha1="49c4b8fb2cd8b6f5dbf9aaf59d4142dab087b0bf">
+=======
+        sha1="563e2596480d19b01a76ad1243860404e8247a6d">
+>>>>>>> swipe management
+=======
+        sha1="deaacd20eb56be3a30cc6855e9ab8c4fe08090e6">
+>>>>>>> Manage scrolling screen
         <dex dex="/home/valentin/Documents/IUT/My-Weather-App/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_5835651940ab5fab24f1ec91d7134b65bac3bf42/classes.dex" />
     </item>
     <item
