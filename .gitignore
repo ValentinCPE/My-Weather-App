@@ -1,0 +1,6 @@
+
+*.lock
+
+*.bin
+
+build/intermediates/dex-cache/
