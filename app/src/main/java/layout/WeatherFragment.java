@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,13 +30,21 @@ import lyon1.iut.weatherapp.Weather;
 public class WeatherFragment extends Fragment {
     Typeface weatherFont;
 
-    TextView champVille;
-    TextView champMAJ;
-    TextView champDetail;
-    TextView champTemp;
-    TextView IconeMeteo;
+    static TextView champVille;
+    static TextView champMAJ;
+    static TextView champDetail;
+    static TextView champTemp;
+    static TextView IconeMeteo;
 
+    private static int screenPosition;
 
+    private static FragmentActivity activity;
+
+    public WeatherFragment(){};
+
+    public WeatherFragment(int listValue){
+        screenPosition = listValue;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,23 +64,33 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weatherIcon.ttf");
+        activity = (FragmentActivity)this.getContext();
+        weatherFont = Typeface.createFromAsset(activity.getAssets(), "fonts/weatherIcon.ttf");
     }
-
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        majMeteo(new CitySaved(getActivity()).getCity());
-       // changeCity("Villeurbanne, FR");
+        majChamps();
     }
 
-    public void changeCity(String city){
+
+   /* public void changeCity(String city){
         majMeteo(city);
-    }
+    } */
 
-    private void majMeteo(final String city){
-        new AsyncTask().execute(city,getActivity(),champVille,champMAJ,champDetail,champTemp,IconeMeteo);
+
+    public static void majChamps(){
+        if(Forecast.getWeatherList(new CitySaved(activity).getCity()) != null) {
+            //using of the class Forecast with the only useful date
+            ArrayList<Weather> forecastsReader = Forecast.getWeatherList(new CitySaved(activity).getCity());
+            Log.d("testForecast", String.valueOf(screenPosition));
+            champVille.setText(new CitySaved(activity).getCity());
+            champMAJ.setText(forecastsReader.get(screenPosition).getUpdateTimeToString());
+            champDetail.setText("Humidity : " + forecastsReader.get(screenPosition).getHumidity()
+                    + "%\nPressure : " + forecastsReader.get(screenPosition).getPressure() + " Pa");
+            champTemp.setText(String.valueOf(forecastsReader.get(screenPosition).getTemperature()) + " °C");
+            IconeMeteo.setText(forecastsReader.get(screenPosition).getIcone());
+        }
     }
 }

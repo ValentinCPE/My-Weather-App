@@ -52,7 +52,7 @@ public class WeatherActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return new WeatherFragment();
+            return new WeatherFragment(position);
         }
 
         @Override
