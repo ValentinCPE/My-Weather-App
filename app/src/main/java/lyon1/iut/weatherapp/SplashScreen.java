@@ -3,13 +3,17 @@ package lyon1.iut.weatherapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import layout.WeatherFragment;
 
 /**
  * Created by valentin on 29/03/17.
@@ -23,6 +27,10 @@ public class SplashScreen extends Activity{
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
+
+
+        majMeteo(new CitySaved(SplashScreen.this).getCity());
+
         try
         {
             videoElem = (VideoView) findViewById(R.id.myvideo);
@@ -70,5 +78,9 @@ public class SplashScreen extends Activity{
                 "No connection, App closed !",
                 Toast.LENGTH_LONG).show();
         finish();
+    }
+
+    public void majMeteo(final String city){
+        new AsyncTask().execute(city,SplashScreen.this);
     }
 }

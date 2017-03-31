@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import layout.WeatherFragment;
+
 /**
  * Created by jeremy on 10/03/17.
  */
@@ -36,22 +38,12 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
 
     JSONObject jsonobj;
 
-    TextView champVille;
-    TextView champMAJ;
-    TextView champDetail;
-    TextView champTemp;
-    TextView IconeMeteo;
     Activity weatherFragmentActivity;
 
     @Override
     protected JSONObject doInBackground(Object... params) {
         chaine = (String) params[0];
         weatherFragmentActivity = (Activity) params[1];
-        champVille = (TextView) params[2];
-        champMAJ = (TextView) params[3];
-        champDetail = (TextView) params[4];
-        champTemp = (TextView) params[5];
-        IconeMeteo = (TextView) params[6];
 
 
         try {
@@ -136,19 +128,6 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
                         Forecast.addForecast(chaine,previsionsVille);
 
 
-                        //using of the class Forecast with the only useful date
-                            ArrayList<Weather> forecastsReader = Forecast.getWeatherList(chaine);
-
-                            champVille.setText(chaine);
-                            champMAJ.setText(forecastsReader.get(0).getUpdateTimeToString());
-                            champDetail.setText("Humidity : " + forecastsReader.get(0).getHumidity()
-                                    + "%\nPressure : " + forecastsReader.get(0).getPressure() + " Pa");
-                            champTemp.setText(String.valueOf(forecastsReader.get(0).getTemperature()) + " °C");
-                            IconeMeteo.setText(forecastsReader.get(0).getIcone());
-
-                          /*  for(int i = 0; i < forecastsReader.size(); i++) {
-                                Log.d("testHour", forecastsReader.get(i).getUpdateTimeToString());
-                            } */
                     } catch (JSONException e) {
                         Toast.makeText(weatherFragmentActivity,
                                 weatherFragmentActivity.getString(R.string.error_fetch_data),
