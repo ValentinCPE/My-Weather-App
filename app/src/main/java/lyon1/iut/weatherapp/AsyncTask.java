@@ -36,6 +36,8 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
     BufferedReader in;
     URL url = null;
 
+    private static boolean first = false;
+
     JSONObject jsonobj;
 
     Activity weatherFragmentActivity;
@@ -111,22 +113,36 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
                             main = oneValueListJSON.getJSONObject("main");
                             sys = oneValueListJSON.getJSONObject("sys");
 
-                            //new object for new forecast
-                            weatherData = new Weather();
+                            String date = oneValueListJSON.getString("dt_txt");
+                            String hour = date.substring(11,13);
 
-                            weatherData.setUpdateTime(oneValueListJSON.getLong("dt"));
+                            if(Integer.valueOf(hour) > 8 && Integer.valueOf(hour) < 20) {
+                                //new object for new forecast
+                                weatherData = new Weather();
 
-                            weatherData.setHumidity(main.getString("humidity"));
-                            weatherData.setPressure(main.getString("pressure"));
+                                weatherData.setUpdateTime(oneValueListJSON.getString("dt_txt"));
 
-                            weatherData.setTemperature(main.getDouble("temp"));
-                            weatherData.setIcone(details.getInt("id"),weatherFragmentActivity);
+                                weatherData.setTimeDescription(details.getString("description"));
+                                weatherData.setHumidity(main.getString("humidity"));
+                                weatherData.setPressure(main.getString("pressure"));
 
-                            previsionsVille.add(weatherData);
+                                weatherData.setTemperature(main.getDouble("temp"));
+                                weatherData.setIcone(details.getInt("id"), weatherFragmentActivity);
+
+                                previsionsVille.add(weatherData);
+                            }
                         }
 
                         Forecast.addForecast(chaine,previsionsVille);
 
+                        if(first){
+                            Log.d("maj", "champs changent");
+                            WeatherFragment.majChamps();
+                        }
+
+                        first = true;
+
+                        Log.d("testgps2", chaine);
 
                     } catch (JSONException e) {
                         Toast.makeText(weatherFragmentActivity,

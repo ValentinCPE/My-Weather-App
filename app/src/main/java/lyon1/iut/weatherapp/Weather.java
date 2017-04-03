@@ -12,11 +12,12 @@ import java.util.Date;
  */
 
 public class Weather {
-    private Long updateTime;
+    private String updateTime;
     private String icone;
     private String humidity;
     private String pressure;
     private Double temperature;
+    private String timeDescription;
 
 
     public Weather(){
@@ -27,32 +28,22 @@ public class Weather {
         this.temperature = null;
     }
 
-    public Weather(String city, Long update, String icon, String humidity, String pressure, Double tmp)
+    public Weather(String city, String update, String icon, String humidity, String pressure, Double tmp, String timeDes)
     {
         this.updateTime = update;
         this.icone = icon;
         this.humidity = humidity;
         this.pressure = pressure;
         this.temperature = tmp;
+        this.timeDescription = timeDes;
     }
 
 
-    public String getUpdateTimeToString() {
-        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-        String updatedOn = df.format(new Date(this.updateTime*1000));
-
-        //add 0 at the beginning if day < 10
-        if(updatedOn.charAt(1) == ' '){
-            updatedOn = "0" + updatedOn;
-        }
-        return updatedOn;
-    }
-
-    public Long getUpdateTime(){
+    public String getUpdateTime() {
         return this.updateTime;
     }
 
-    public void setUpdateTime(Long updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -86,6 +77,14 @@ public class Weather {
 
     public void setTemperature(Double temperature) {
         this.temperature = temperature;
+    }
+
+    public String getTimeDescription() {
+        return timeDescription;
+    }
+
+    public void setTimeDescription(String timeDescription) {
+        this.timeDescription = timeDescription;
     }
 
     private void setWeatherIcon(int actualId, Activity iconAsset){
