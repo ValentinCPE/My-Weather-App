@@ -97,7 +97,7 @@ public class WeatherActivity extends FragmentActivity {
                     try {
                         addresses = loc.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                         if (addresses.size() > 0) {
-                            new CitySaved(WeatherActivity.this).setCity(addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryCode());
+                            new CitySaved(WeatherActivity.this).setCity(addresses.get(0).getLocality().toLowerCase() + ", " + addresses.get(0).getCountryCode().toLowerCase());
                             majMeteo(new CitySaved(WeatherActivity.this).getCity());
                         }
                     } catch (IOException e) {

@@ -125,10 +125,8 @@ public class SplashScreen extends Activity implements LocationListener {
                     "No connection",
                     Toast.LENGTH_LONG).show();
             enabled = true;
-            start();
-        } else {
-            start();
         }
+        start();
     }
 
     private void start() {
@@ -145,8 +143,8 @@ public class SplashScreen extends Activity implements LocationListener {
     }
 
     private void localisationManagement(){
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        enabled = service
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        enabled = locationManager
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!enabled) {
@@ -167,7 +165,6 @@ public class SplashScreen extends Activity implements LocationListener {
             gpsTest.show();
         }
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         if(locationManager.getBestProvider(criteria, true) != null) {
             provider = locationManager.getBestProvider(criteria, true);
@@ -178,7 +175,7 @@ public class SplashScreen extends Activity implements LocationListener {
                     Geocoder loc = new Geocoder(this, Locale.FRANCE);
                     List<Address> addresses = loc.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     if (addresses.size() > 0) {
-                        new CitySaved(SplashScreen.this).setCity(addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryCode());
+                        new CitySaved(SplashScreen.this).setCity(addresses.get(0).getLocality().toLowerCase() + ", " + addresses.get(0).getCountryCode().toLowerCase());
                         majMeteo(new CitySaved(SplashScreen.this).getCity());
                         enabled = true;
                         //   start();
@@ -186,7 +183,7 @@ public class SplashScreen extends Activity implements LocationListener {
 
                 } else {
                     Toast.makeText(SplashScreen.this, "No Location", Toast.LENGTH_LONG).show();
-                    new CitySaved(SplashScreen.this).setCity("Villeurbanne, FR");
+                    new CitySaved(SplashScreen.this).setCity("villeurbanne, fr");
                     majMeteo(new CitySaved(SplashScreen.this).getCity());
                     enabled = true;
                 }
