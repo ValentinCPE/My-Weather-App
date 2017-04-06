@@ -20,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ public class WeatherActivity extends FragmentActivity {
     private TextView seLocaliser;
     private TextView changer;
     private TextView map;
+    private TextView history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,18 +96,51 @@ public class WeatherActivity extends FragmentActivity {
                 if(location != null) {
                     try {
                         addresses = loc.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        if (addresses.size() > 0) {
+                            new CitySaved(WeatherActivity.this).setCity(addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryCode());
+                            majMeteo(new CitySaved(WeatherActivity.this).getCity());
+                        }
                     } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (addresses.size() > 0) {
-                        new CitySaved(WeatherActivity.this).setCity(addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryCode());
-                        majMeteo(new CitySaved(WeatherActivity.this).getCity());
+                        Toast.makeText(WeatherActivity.this,"Connection problem", Toast.LENGTH_LONG).show();
                     }
                 }else{
-                    Toast.makeText(WeatherActivity.this,"Connection problem, sorry", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WeatherActivity.this,"Localisation problem, sorry", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+        history = (TextView) findViewById(R.id.textViewFavori);
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builderSingle = new AlertDialog.Builder(WeatherActivity.this);
+                builderSingle.setTitle("Select One City:");
+
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(WeatherActivity.this, android.R.layout.select_dialog_singlechoice);
+
+                for(String city : Forecast.getCityHistory())
+                    arrayAdapter.add(city);
+
+                builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String cityChoose = arrayAdapter.getItem(which);
+                        new CitySaved(WeatherActivity.this).setCity(cityChoose);
+                        majMeteo(new CitySaved(WeatherActivity.this).getCity());
+                    }
+                });
+                builderSingle.show();
+            }
+        });
+
+
     }
 
     @Override
@@ -150,7 +185,7 @@ public class WeatherActivity extends FragmentActivity {
         builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                changeCity(input.getText().toString());
+                changeCity(input.getText().toString().toLowerCase());
             }
         });
         builder.show();

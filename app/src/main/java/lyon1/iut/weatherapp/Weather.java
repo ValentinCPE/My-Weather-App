@@ -28,7 +28,7 @@ public class Weather {
         this.temperature = null;
     }
 
-    public Weather(String city, String update, String icon, String humidity, String pressure, Double tmp, String timeDes)
+    public Weather(String update, String icon, String humidity, String pressure, Double tmp, String timeDes)
     {
         this.updateTime = update;
         this.icone = icon;

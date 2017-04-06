@@ -121,7 +121,11 @@ public class SplashScreen extends Activity implements LocationListener {
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         if (!isConnected) {
-            quit();
+            Toast.makeText(SplashScreen.this,
+                    "No connection",
+                    Toast.LENGTH_LONG).show();
+            enabled = true;
+            start();
         } else {
             start();
         }
@@ -134,13 +138,6 @@ public class SplashScreen extends Activity implements LocationListener {
         startActivity(new Intent(this, WeatherActivity.class).putExtra("city", new CitySaved(SplashScreen.this).getCity()));
         finish();
 
-    }
-
-    private void quit() {
-        Toast.makeText(SplashScreen.this,
-                "No connection, App closed !",
-                Toast.LENGTH_LONG).show();
-        finish();
     }
 
     public void majMeteo(final String city) {
@@ -172,37 +169,39 @@ public class SplashScreen extends Activity implements LocationListener {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, true);
-        location = locationManager.getLastKnownLocation(provider);
+        if(locationManager.getBestProvider(criteria, true) != null) {
+            provider = locationManager.getBestProvider(criteria, true);
+            location = locationManager.getLastKnownLocation(provider);
 
-        try {
-        if (location != null) {
+            try {
+                if (location != null) {
                     Geocoder loc = new Geocoder(this, Locale.FRANCE);
                     List<Address> addresses = loc.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     if (addresses.size() > 0) {
-                        new CitySaved(SplashScreen.this).setCity(addresses.get(0).getLocality()+", "+addresses.get(0).getCountryCode());
+                        new CitySaved(SplashScreen.this).setCity(addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryCode());
                         majMeteo(new CitySaved(SplashScreen.this).getCity());
                         enabled = true;
-                     //   start();
+                        //   start();
                     }
 
-        }else{
-                    Toast.makeText(SplashScreen.this,"No Location", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(SplashScreen.this, "No Location", Toast.LENGTH_LONG).show();
                     new CitySaved(SplashScreen.this).setCity("Villeurbanne, FR");
                     majMeteo(new CitySaved(SplashScreen.this).getCity());
                     enabled = true;
-            }
-            }catch(Exception e){
+                }
+            } catch (Exception e) {
                 Log.d("gps", "problem locality");
             }
 
 
-
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
-                    PERMISSION_ACCESS_COARSE_LOCATION);
         }
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
+                        PERMISSION_ACCESS_COARSE_LOCATION);
+            }
+
     }
 
     @Override

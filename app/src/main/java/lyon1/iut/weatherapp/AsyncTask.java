@@ -32,7 +32,7 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
     private static final String OPEN_WEATHER_MAP_API =
             "http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=910f0c05f62e5508a3428198252eed06&units=metric";
 
-    String chaine, chaine2;
+    String ville, chaine2;
     BufferedReader in;
     URL url = null;
 
@@ -44,12 +44,12 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
 
     @Override
     protected JSONObject doInBackground(Object... params) {
-        chaine = (String) params[0];
+        ville = (String) params[0];
         weatherFragmentActivity = (Activity) params[1];
 
 
         try {
-                url = new URL(String.format(OPEN_WEATHER_MAP_API, chaine));
+                url = new URL(String.format(OPEN_WEATHER_MAP_API, ville));
 
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK){
@@ -66,6 +66,7 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
 
 
                     if(jsonobj.getInt("cod") != 200){
+                        Log.d("apitest", "api problem");
                         return null;
                     }
 
@@ -133,7 +134,7 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
                             }
                         }
 
-                        Forecast.addForecast(chaine,previsionsVille);
+                        Forecast.addForecast(ville,previsionsVille);
 
                         if(first){
                             Log.d("maj", "champs changent");
@@ -142,7 +143,7 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
 
                         first = true;
 
-                        Log.d("testgps2", chaine);
+                        Log.d("testgps2", ville);
 
                     } catch (JSONException e) {
                         Toast.makeText(weatherFragmentActivity,
@@ -150,33 +151,6 @@ public class AsyncTask extends android.os.AsyncTask<Object,Void,JSONObject> {
                                 Toast.LENGTH_LONG).show();
                         System.err.println(e.getMessage());
                     }
-                       /* try {
-                            champVille.setText(jsonobj.getString("name").toUpperCase(Locale.FRANCE) +
-                                    ", " +
-                                    jsonobj.getJSONObject("sys").getString("country"));
-
-                            JSONObject details = jsonobj.getJSONArray("weather").getJSONObject(0);
-                            JSONObject main = jsonobj.getJSONObject("main");
-                            champDetail.setText(
-                                    details.getString("description").toUpperCase(Locale.FRANCE) +
-                                            "\n" + "Humidity: " + main.getString("humidity") + "%" +
-                                            "\n" + "Pressure: " + main.getString("pressure") + " hPa");
-
-                            champTemp.setText(
-                                    String.format("%.1f", main.getDouble("temp"))+ " ℃");
-
-                            DateFormat df = DateFormat.getDateTimeInstance();
-                            String updatedOn = df.format(new Date(jsonobj.getLong("dt")*1000));
-                            champMAJ.setText("Last update: " + updatedOn);
-
-                            setWeatherIcon(details.getInt("id"),
-                                    jsonobj.getJSONObject("sys").getLong("sunrise") * 1000,
-                                    jsonobj.getJSONObject("sys").getLong("sunset") * 1000);
-
-                        }catch(Exception e){
-                            Log.e("weather", "data not found in the JSON");
-                            Log.e("weather", e.getMessage());
-                        } */
                 }
     }
 
